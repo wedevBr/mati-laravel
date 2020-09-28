@@ -1,8 +1,4 @@
 <?php
-
-/*
- * You can place your custom package configuration in here.
- */
 return [
     // Client ID provided by Mati dashboard
     'client_id' => env('MATI_CLIENT_ID', null),
