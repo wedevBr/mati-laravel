@@ -3,3 +3,7 @@ composer.lock
 docs
 vendor
 coverage
+.vscode
+.idea
+.directory
+.DS_Store
