@@ -86,4 +86,13 @@ class Mati
         }
     }
 
+    /**
+     * Get auth API URL
+     *
+     * @return string
+     */
+    protected function getAuthURL()
+    {
+        return config('mati')['auth_url'];
+    }
 }
