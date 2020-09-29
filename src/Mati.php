@@ -25,6 +25,32 @@ class Mati
     }
 
     /**
+     * Set Client ID for authorization
+     *
+     * @param string $client_id
+     * @return self
+     */
+    public function setClientId(string $client_id)
+    {
+        $this->client_id = $client_id;
+
+        return $this;
+    }
+
+    /**
+     * Set Client Secret for authorization
+     *
+     * @param string $client_secret
+     * @return self
+     */
+    public function setClientSecret(string $client_secret)
+    {
+        $this->client_secret = $client_secret;
+
+        return $this;
+    }
+
+    /**
      * Resolve value for Client ID in the constructor
      *
      * @param string|null $client_id
