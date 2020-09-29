@@ -66,6 +66,21 @@ class Mati
     }
 
     /**
+     * Perform HTTP to get an access token
+     *
+     * @throws RequestException
+     * @return array
+     */
+    public function requestAccessToken()
+    {
+        return Http::withBasicAuth($this->client_id, $this->client_secret)
+            ->asForm()
+            ->post($this->getAuthURL(), ['grant_type' => 'client_credentials'])
+            ->throw()
+            ->json();
+    }
+
+    /**
      * Resolve value for Client ID in the constructor
      *
      * @param string|null $client_id
