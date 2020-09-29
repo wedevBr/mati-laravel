@@ -1,7 +1,15 @@
 <?php
-
 namespace WeDevBr\Mati;
 
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Support\Facades\Http;
+use LogicException;
+
+/**
+ * Mati API wrapper class
+ *
+ * @author Gabriel Mineiro <gabrielpfgmineiro@gmail.com>
+ */
 class Mati
 {
     protected $client_id = null;
@@ -78,6 +86,44 @@ class Mati
             ->post($this->getAuthURL(), ['grant_type' => 'client_credentials'])
             ->throw()
             ->json();
+    }
+
+    /**
+     * Authorize with Mati's API credentials
+     *
+     * @param string|null $client_id
+     * @param string|null $client_secret
+     * @return self
+     */
+    public function authorize(string $client_id = null, string $client_secret = null)
+    {
+        if ($client_id) {
+            $this->setClientId($client_id);
+        }
+
+        if ($client_secret) {
+            $this->setClientSecret($client_secret);
+        }
+
+        if (!($this->client_id && $this->client_secret)) {
+            throw new LogicException('No client ID and secret were given to authorize Mati');
+        }
+
+        $response = $this->requestAccessToken();
+
+        $this->setAccessToken($response['access_token']);
+
+        return $this;
+    }
+
+    /**
+     * Alias for authorize()
+     *
+     * @see authorize()
+     */
+    public function authorise(...$args)
+    {
+        return $this->authorize(...$args);
     }
 
     /**
