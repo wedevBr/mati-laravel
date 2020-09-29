@@ -51,6 +51,21 @@ class Mati
     }
 
     /**
+     * Set API access token
+     *
+     * Good to use with caching for JWT token
+     *
+     * @param string $access_token
+     * @return self
+     */
+    public function setAccessToken(string $access_token)
+    {
+        $this->access_token = $access_token;
+
+        return $this;
+    }
+
+    /**
      * Resolve value for Client ID in the constructor
      *
      * @param string|null $client_id
