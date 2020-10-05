@@ -305,4 +305,24 @@ class MatiTest extends TestCase
         $propertyValue = $this->makeReflectionProperty('client_secret')->getValue($mati);
         $this->assertEquals('dontTell', $propertyValue);
     }
+
+    public function testCreateIdentity() {
+        $clientMock = $this->getMockBuilder(MatiHttpClient::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $clientMock->expects($this->exactly(2))
+            ->method('createIdentity')
+            ->withConsecutive(
+                [null, null, null],
+                [['id' => 'ebc645e'], 'abcdef12345', '200.251.85.74']
+            )
+            ->willReturn((object) ['object' => function () {
+                return (object) [];
+            }]);
+
+        $mati = new Mati($clientMock);
+        $mati->setAccessToken('123321');
+        $mati->createIdentity();
+        $mati->createIdentity(['id' => 'ebc645e'], 'abcdef12345', '200.251.85.74');
+    }
 }

@@ -116,6 +116,16 @@ class Mati
     }
 
     /**
+     * Create an identity for an user that is going to be verified
+     *
+     * @return object
+     */
+    public function createIdentity($metadata = null, $flow_id = null, $user_ip = null)
+    {
+        return $this->client->createIdentity($metadata, $flow_id, $user_ip)->object();
+    }
+
+    /**
      * Resolve value for Client ID in the constructor
      *
      * @param string|null $client_id
