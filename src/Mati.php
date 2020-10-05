@@ -1,9 +1,9 @@
 <?php
+
 namespace WeDevBr\Mati;
 
-use Illuminate\Http\Client\RequestException;
-use Illuminate\Support\Facades\Http;
 use LogicException;
+use WeDevBr\Mati\Support\Contracts\MatiClientInterface;
 
 /**
  * Mati API wrapper class
@@ -12,9 +12,9 @@ use LogicException;
  */
 class Mati
 {
+    protected $client;
     protected $client_id = null;
     protected $client_secret = null;
-    protected string $access_token;
 
     /**
      * Mati class constructor
@@ -22,8 +22,12 @@ class Mati
      * @param string|null $client_id
      * @param string|null $client_secret
      */
-    public function __construct(string $client_id = null, string $client_secret = null)
-    {
+    public function __construct(
+        MatiClientInterface $client,
+        string $client_id = null,
+        string $client_secret = null
+    ) {
+        $this->client = $client;
         $this->resolveClientId($client_id);
         $this->resolveClientSecret($client_secret);
 
@@ -68,24 +72,9 @@ class Mati
      */
     public function setAccessToken(string $access_token)
     {
-        $this->access_token = $access_token;
+        $this->client->withToken($access_token);
 
         return $this;
-    }
-
-    /**
-     * Perform HTTP to get an access token
-     *
-     * @throws RequestException
-     * @return array
-     */
-    public function requestAccessToken()
-    {
-        return Http::withBasicAuth($this->client_id, $this->client_secret)
-            ->asForm()
-            ->post($this->getAuthURL(), ['grant_type' => 'client_credentials'])
-            ->throw()
-            ->json();
     }
 
     /**
@@ -109,9 +98,9 @@ class Mati
             throw new LogicException('No client ID and secret were given to authorize Mati');
         }
 
-        $response = $this->requestAccessToken();
+        $response = $this->client->getAccessToken($this->client_id, $this->client_secret);
 
-        $this->setAccessToken($response['access_token']);
+        $this->setAccessToken($response->object()->access_token);
 
         return $this;
     }
@@ -160,15 +149,5 @@ class Mati
                 $this->setClientSecret($config_client_secret);
             }
         }
-    }
-
-    /**
-     * Get auth API URL
-     *
-     * @return string
-     */
-    protected function getAuthURL()
-    {
-        return config('mati')['auth_url'];
     }
 }

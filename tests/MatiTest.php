@@ -4,6 +4,7 @@ namespace WeDevBr\Mati\Tests;
 
 use Illuminate\Support\Facades\Config;
 use LogicException;
+use WeDevBr\Mati\MatiHttpClient;
 use Orchestra\Testbench\TestCase;
 use ReflectionClass;
 use WeDevBr\Mati\Mati;
@@ -51,6 +52,11 @@ class MatiTest extends TestCase
         return $reflectedProperty;
     }
 
+    protected function makeMati($client_id = null, $client_secret = null)
+    {
+        return new Mati(new MatiHttpClient, $client_id, $client_secret);
+    }
+
     /**
      * Test setClientId method
      *
@@ -61,7 +67,7 @@ class MatiTest extends TestCase
      */
     public function testSetClientId()
     {
-        $mati = new Mati();
+        $mati = $this->makeMati();
 
         $mati->setClientId('123456');
 
@@ -81,7 +87,7 @@ class MatiTest extends TestCase
      */
     public function testSetClientSecret()
     {
-        $mati = new Mati();
+        $mati = $this->makeMati();
 
         $mati->setClientSecret('shhh');
 
@@ -101,14 +107,17 @@ class MatiTest extends TestCase
      */
     public function testSetAccessToken()
     {
-        $mati = new Mati();
+        $clientMock = $this->getMockBuilder(MatiHttpClient::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $clientMock->expects($this->once())
+            ->method('withToken')
+            ->with('123ABC==')
+            ->willReturnSelf();
+
+        $mati = new Mati($clientMock);
 
         $mati->setAccessToken('123ABC==');
-
-        $propertyValue = $this->makeReflectionProperty('access_token')
-            ->getValue($mati);
-
-        $this->assertEquals('123ABC==', $propertyValue);
     }
 
     /**
@@ -121,25 +130,20 @@ class MatiTest extends TestCase
      */
     public function testAuthorizeWithoutParamsSuccess()
     {
-        $mock = $this->getMockBuilder(Mati::class)
-            ->onlyMethods(['requestAccessToken'])
+        $clientMock = $this->getMockBuilder(MatiHttpClient::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $mock->expects($this->once())
-            ->method('requestAccessToken')
-            ->willReturn(['access_token' => '123ABC==']);
+        $clientMock->expects($this->once())
+            ->method('getAccessToken')
+            ->with('123', 'shhh')
+            ->willReturn((object) ['object' => function () {
+                return (object) ['access_token' => '123ABC=='];
+            }]);
 
-        $mock->setClientId('123');
-        $mock->setClientSecret('shhh');
-        $mock->authorize();
-
-        $client_id = $this->makeReflectionProperty('client_id')->getValue($mock);
-        $client_secret = $this->makeReflectionProperty('client_secret')->getValue($mock);
-        $access_token = $this->makeReflectionProperty('access_token')->getValue($mock);
-
-        $this->assertEquals('123', $client_id);
-        $this->assertEquals('shhh', $client_secret);
-        $this->assertEquals('123ABC==', $access_token);
+        $mati = new Mati($clientMock);
+        $mati->setClientId('123');
+        $mati->setClientSecret('shhh');
+        $mati->authorize();
     }
 
     /**
@@ -152,7 +156,7 @@ class MatiTest extends TestCase
      */
     public function testAuthorizeWithoutParamsFailsWithoutClientIdAndClientSecret()
     {
-        $mati = new Mati();
+        $mati = $this->makeMati();
 
         $this->expectException(LogicException::class);
         $mati->authorize();
@@ -168,7 +172,7 @@ class MatiTest extends TestCase
      */
     public function testAuthorizeWithoutParamsFailsWithoutClientId()
     {
-        $mati = new Mati();
+        $mati = $this->makeMati();
         $mati->setClientSecret('123ABC==');
 
         $this->expectException(LogicException::class);
@@ -185,7 +189,7 @@ class MatiTest extends TestCase
      */
     public function testAuthorizeWithoutParamsFailsWithoutClientSecret()
     {
-        $mati = new Mati();
+        $mati = $this->makeMati();
         $mati->setClientId('123');
 
         $this->expectException(LogicException::class);
@@ -202,23 +206,24 @@ class MatiTest extends TestCase
      */
     public function testAuthorizeWithParams()
     {
-        $mock = $this->getMockBuilder(Mati::class)
-            ->onlyMethods(['requestAccessToken'])
+        $clientMock = $this->getMockBuilder(MatiHttpClient::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $mock->expects($this->once())
-            ->method('requestAccessToken')
-            ->willReturn(['access_token' => '123ABC==']);
+        $clientMock->expects($this->once())
+            ->method('getAccessToken')
+            ->with('123', 'shhh')
+            ->willReturn((object) ['object' => function () {
+                return (object) ['access_token' => '123ABC=='];
+            }]);
 
-        $mock->authorize('123', 'shhh');
+        $mati = new Mati($clientMock);
+        $mati->authorize('123', 'shhh');
 
-        $client_id = $this->makeReflectionProperty('client_id')->getValue($mock);
-        $client_secret = $this->makeReflectionProperty('client_secret')->getValue($mock);
-        $access_token = $this->makeReflectionProperty('access_token')->getValue($mock);
+        $client_id = $this->makeReflectionProperty('client_id')->getValue($mati);
+        $client_secret = $this->makeReflectionProperty('client_secret')->getValue($mati);
 
         $this->assertEquals('123', $client_id);
         $this->assertEquals('shhh', $client_secret);
-        $this->assertEquals('123ABC==', $access_token);
     }
 
     /**
@@ -255,18 +260,18 @@ class MatiTest extends TestCase
     {
         $reflectedMethod = $this->makeReflectionMethod('resolveClientId');
 
-        $mati = new Mati();
+        $mati = $this->makeMati();
         $reflectedMethod->invoke($mati, null);
         $propertyValue = $this->makeReflectionProperty('client_id')->getValue($mati);
         $this->assertNull($propertyValue);
 
-        $mati = new Mati();
+        $mati = $this->makeMati();
         Config::set('mati.client_id', '123');
         $reflectedMethod->invoke($mati, null);
         $propertyValue = $this->makeReflectionProperty('client_id')->getValue($mati);
         $this->assertEquals('123', $propertyValue);
 
-        $mati = new Mati();
+        $mati = $this->makeMati();
         $reflectedMethod->invoke($mati, '987');
         $propertyValue = $this->makeReflectionProperty('client_id')->getValue($mati);
         $this->assertEquals('987', $propertyValue);
@@ -284,18 +289,18 @@ class MatiTest extends TestCase
     {
         $reflectedMethod = $this->makeReflectionMethod('resolveClientSecret');
 
-        $mati = new Mati();
+        $mati = $this->makeMati();
         $reflectedMethod->invoke($mati, null);
         $propertyValue = $this->makeReflectionProperty('client_secret')->getValue($mati);
         $this->assertNull($propertyValue);
 
-        $mati = new Mati();
+        $mati = $this->makeMati();
         Config::set('mati.client_secret', 'shhh');
         $reflectedMethod->invoke($mati, null);
         $propertyValue = $this->makeReflectionProperty('client_secret')->getValue($mati);
         $this->assertEquals('shhh', $propertyValue);
 
-        $mati = new Mati();
+        $mati = $this->makeMati();
         $reflectedMethod->invoke($mati, 'dontTell');
         $propertyValue = $this->makeReflectionProperty('client_secret')->getValue($mati);
         $this->assertEquals('dontTell', $propertyValue);
