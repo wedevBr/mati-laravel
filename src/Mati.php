@@ -12,6 +12,11 @@ use WeDevBr\Mati\Support\Contracts\MatiClientInterface;
  */
 class Mati
 {
+    /**
+     * Mati API client
+     *
+     * @var MatiClientInterface
+     */
     protected $client;
     protected $client_id = null;
     protected $client_secret = null;
@@ -19,6 +24,7 @@ class Mati
     /**
      * Mati class constructor
      *
+     * @param MatiClientInterface $client
      * @param string|null $client_id
      * @param string|null $client_secret
      */

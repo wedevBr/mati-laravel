@@ -52,9 +52,16 @@ class MatiTest extends TestCase
         return $reflectedProperty;
     }
 
+    /**
+     * Instantiate the simpler form of Mati class
+     *
+     * @param string $client_id
+     * @param string $client_secret
+     * @return Mati
+     */
     protected function makeMati($client_id = null, $client_secret = null)
     {
-        return new Mati(new MatiHttpClient, $client_id, $client_secret);
+        return new Mati(new MatiHttpClient(), $client_id, $client_secret);
     }
 
     /**
@@ -306,6 +313,14 @@ class MatiTest extends TestCase
         $this->assertEquals('dontTell', $propertyValue);
     }
 
+    /**
+     * Test createIdentity Method
+     *
+     * It should call the corresponding client method with correct params
+     *
+     * @test
+     * @return void
+     */
     public function testCreateIdentity() {
         $clientMock = $this->getMockBuilder(MatiHttpClient::class)
             ->disableOriginalConstructor()

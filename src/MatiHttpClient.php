@@ -60,7 +60,7 @@ class MatiHttpClient implements MatiClientInterface
      * @param array|null $metadata Key/Value pair of data to identify the user
      * @param string|null $flowId
      * @param string|null $user_ip
-     * @throws \Illuminate\Http\Client\RequestException
+     * @throws \Illuminate\Http\Client\RequestException|LogicException
      * @return Response
      */
     public function createIdentity($metadata = null, $flowId = null, $user_ip = null): Response
