@@ -44,9 +44,7 @@ class MatiServiceProvider extends ServiceProvider
             // $this->commands([]);
         }
 
-        $this->app->when(Mati::class)
-            ->needs(MatiClientInterface::class)
-            ->give(MatiHttpClient::class);
+        $this->app->bind(MatiClientInterface::class, MatiHttpClient::class);
     }
 
     /**
