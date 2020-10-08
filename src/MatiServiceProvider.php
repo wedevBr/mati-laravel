@@ -3,6 +3,7 @@
 namespace WeDevBr\Mati;
 
 use Illuminate\Support\ServiceProvider;
+use WeDevBr\Mati\Support\Contracts\MatiClientInterface;
 
 class MatiServiceProvider extends ServiceProvider
 {
@@ -42,6 +43,10 @@ class MatiServiceProvider extends ServiceProvider
             // Registering package commands.
             // $this->commands([]);
         }
+
+        $this->app->when(Mati::class)
+            ->needs(MatiClientInterface::class)
+            ->give(MatiHttpClient::class);
     }
 
     /**
@@ -54,7 +59,7 @@ class MatiServiceProvider extends ServiceProvider
 
         // Register the main class to use with the facade
         $this->app->singleton('mati', function () {
-            return new Mati(new MatiHttpClient());
+            return $this->app->make(Mati::class);
         });
     }
 }
