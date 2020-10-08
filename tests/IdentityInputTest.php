@@ -13,7 +13,6 @@ use WeDevBr\Mati\MatiServiceProvider;
  */
 class IdentityInputTest extends TestCase
 {
-
     protected function getPackageProviders($app)
     {
         return [MatiServiceProvider::class];
