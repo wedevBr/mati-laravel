@@ -140,6 +140,51 @@ class MatiHttpClient implements MatiClientInterface
     }
 
     /**
+     * Retrieve info about a verification process
+     *
+     * @param string $resource_url URL received by webhook
+     *
+     * @throws RequestException
+     * @return Response
+     */
+    public function retrieveResourceDataFromUrl(string $resource_url)
+    {
+        return Http::withToken($this->access_token)
+            ->get($resource_url)
+            ->throw();
+    }
+
+    /**
+     * Retrieve info about a verification process
+     *
+     * @param string $verification_id
+     *
+     * @throws RequestException
+     * @return Response
+     */
+    public function retrieveResourceDataByVerificationId(string $verification_id)
+    {
+        return $this->retrieveResourceDataFromUrl(
+            $this->getApiUrl() . "/verifications/$verification_id"
+        );
+    }
+
+    /**
+     * Download the file sent by the user during the verification process
+     *
+     * @param string $media_url
+     *
+     * @throws RequestException
+     * @return Response
+     */
+    public function downloadVerificationMedia(string $media_url)
+    {
+        return Http::withToken($this->access_token)
+            ->get($media_url)
+            ->throw();
+    }
+
+    /**
      * Get auth API URL
      *
      * @return string

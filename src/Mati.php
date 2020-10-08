@@ -145,6 +145,41 @@ class Mati
     }
 
     /**
+     * Retrieve info about a verification process
+     *
+     * @param string $resource_url URL received by webhook
+     * @return object
+     */
+    public function retrieveResourceDataFromUrl(string $resource_url)
+    {
+        return $this->client->retrieveResourceDataFromUrl($resource_url)->object();
+    }
+
+    /**
+     * Retrieve info about a verification process
+     *
+     * @param string $verification_id
+     * @return object
+     */
+    public function retrieveResourceDataByVerificationId(string $verification_id)
+    {
+        return $this->client->retrieveResourceDataFromUrl($verification_id)->object();
+    }
+
+    /**
+     * Download the file sent by the user during the verification process
+     *
+     * @param string $media_url
+     *
+     * @throws RequestException
+     * @return string Media contents
+     */
+    public function downloadVerificationMedia(string $media_url)
+    {
+        return $this->client->downloadVerificationMedia($media_url)->body();
+    }
+
+    /**
      * Resolve value for Client ID in the constructor
      *
      * @param string|null $client_id

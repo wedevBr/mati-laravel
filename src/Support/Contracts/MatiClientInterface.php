@@ -44,4 +44,28 @@ interface MatiClientInterface
      * @return Response
      */
     public function sendInput(string $identity_id, $inputs): Response;
+
+    /**
+     * Retrieve info about a verification process
+     *
+     * @param string $resource_url URL received by webhook
+     * @return Response
+     */
+    public function retrieveResourceDataFromUrl(string $resource_url);
+
+    /**
+     * Retrieve info about a verification process
+     *
+     * @param string $verification_id
+     * @return Response
+     */
+    public function retrieveResourceDataByVerificationId(string $verification_id);
+
+    /**
+     * Download the file sent by the user during the verification process
+     *
+     * @param string $media_url
+     * @return Response
+     */
+    public function downloadVerificationMedia(string $media_url);
 }
