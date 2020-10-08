@@ -3,6 +3,7 @@
 namespace WeDevBr\Mati;
 
 use LogicException;
+use WeDevBr\Mati\Support\Contracts\IdentityInputInterface;
 use WeDevBr\Mati\Support\Contracts\MatiClientInterface;
 
 /**
@@ -129,6 +130,18 @@ class Mati
     public function createIdentity($metadata = null, $flow_id = null, $user_ip = null)
     {
         return $this->client->createIdentity($metadata, $flow_id, $user_ip)->object();
+    }
+
+    /**
+     * Send input for verification
+     *
+     * @param string $identity_id
+     * @param IdentityInputInterface[]|Collection $inputs
+     * @return object
+     */
+    public function sendInput(string $identity_id, $inputs)
+    {
+        return $this->client->sendInput($identity_id, $inputs)->object();
     }
 
     /**

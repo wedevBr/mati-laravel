@@ -2,9 +2,13 @@
 
 namespace WeDevBr\Mati;
 
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use LogicException;
+use TypeError;
+use WeDevBr\Mati\Support\Contracts\IdentityInputInterface;
 use WeDevBr\Mati\Support\Contracts\MatiClientInterface;
 
 /**
@@ -21,7 +25,7 @@ class MatiHttpClient implements MatiClientInterface
      */
     protected $access_token;
 
-    public function __constructor(string $access_token = null)
+    public function __construct(string $access_token = null)
     {
         $this->access_token = $access_token;
     }
@@ -43,7 +47,7 @@ class MatiHttpClient implements MatiClientInterface
      *
      * @param string $client_id
      * @param string $client_user
-     * @throws \Illuminate\Http\Client\RequestException
+     * @throws RequestException
      * @return Response
      */
     public function getAccessToken(string $client_id, string $client_secret): Response
@@ -60,7 +64,7 @@ class MatiHttpClient implements MatiClientInterface
      * @param array|null $metadata Key/Value pair of data to identify the user
      * @param string|null $flowId
      * @param string|null $user_ip
-     * @throws \Illuminate\Http\Client\RequestException|LogicException
+     * @throws RequestException|LogicException
      * @return Response
      */
     public function createIdentity($metadata = null, $flowId = null, $user_ip = null): Response
@@ -84,7 +88,54 @@ class MatiHttpClient implements MatiClientInterface
             $request->withHeaders(['X-Forwarded-For' => $user_ip]);
         }
 
-        return $request->post($this->getApiUrl() . '/identities', $metadata)
+        return $request->post($this->getApiUrl() . '/identities', $payload)
+            ->throw();
+    }
+
+    /**
+     * Send an input for a document, selfie or other file required during a process
+     *
+     * @param string $identity_id
+     * @param IdentityInputInterface[]|Collection $inputs
+     *
+     * @throws LogicException|RequestException
+     * @return Response
+     */
+    public function sendInput(string $identity_id, $inputs): Response
+    {
+        if (!$this->access_token) {
+            throw new LogicException('No access token given to send input');
+        }
+
+        $inputs_collection = null;
+
+        if (is_array($inputs)) {
+            $inputs_collection = collect($inputs);
+        } elseif ($inputs instanceof Collection) {
+            $inputs_collection = $inputs;
+        } else {
+            throw new TypeError('Inputs param must be an array or a Collection');
+        }
+
+        if (
+            !$inputs_collection->every(function ($input) {
+                return $input instanceof IdentityInputInterface;
+            })
+        ) {
+            throw new TypeError('Every item of inputs must be instance of IdentityInputInterface');
+        }
+
+        $request = Http::withToken($this->access_token)
+            ->asMultipart();
+
+        foreach ($inputs_collection as $input) {
+            $request->attach('document', $input->getFileContents(), $input->getFileName());
+        }
+
+        return $request->post(
+            $this->getApiUrl() . "/identities/$identity_id/send-input",
+            ['inputs' => $inputs_collection->toJson()]
+        )
             ->throw();
     }
 

@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 
 interface MatiClientInterface
 {
-    public function __constructor(string $access_token = null);
+    public function __construct(string $access_token = null);
 
     /**
      * Set an access token to be used by the requests
@@ -43,5 +43,5 @@ interface MatiClientInterface
      * @param IdentityInputInterface[]|Collection $inputs
      * @return Response
      */
-    // public function sendInput(string $identity_id, $inputs): Response;
+    public function sendInput(string $identity_id, $inputs): Response;
 }
