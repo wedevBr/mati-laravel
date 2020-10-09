@@ -27,14 +27,19 @@ interface MatiClientInterface
     public function getAccessToken(string $client_id, string $client_secret): Response;
 
     /**
-     * Create a new identity for a user that will be verified
+     * Create a new verification process
      *
      * @param array|null $metadata Key/Value pair of data to identify the user
      * @param string|null $flowId
      * @param string|null $user_ip
      * @return Response
      */
-    public function createIdentity($metadata = null, $flowId = null, $user_ip = null): Response;
+    public function createVerification(
+        $metadata = null,
+        $flowId = null,
+        $user_ip = null,
+        $user_agent = null
+    ): Response;
 
     /**
      * Send an input for a document, selfie or other file required during a process
