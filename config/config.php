@@ -6,9 +6,9 @@ return [
     // Client Secret provided by Mati dashboard
     'client_secret' => env('MATI_CLIENT_SECRET', null),
 
-    // Mati's OAuth URL
+    // Mati's API URL
     'api_url' => env('MATI_API_URL', 'https://api.getmati.com/v2'),
 
-    // Mati's API URL
-    'auth_url' => env('MATI_AUTH_URL', 'https://api.getmati.com/oauth')
+    // Mati's OAuth URL
+    'auth_url' => env('MATI_AUTH_URL', 'https://api.getmati.com/oauth/token')
 ];

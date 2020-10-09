@@ -3,6 +3,7 @@
 namespace WeDevBr\Mati;
 
 use Illuminate\Support\ServiceProvider;
+use WeDevBr\Mati\Support\Contracts\MatiClientInterface;
 
 class MatiServiceProvider extends ServiceProvider
 {
@@ -21,7 +22,7 @@ class MatiServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__.'/../config/config.php' => config_path('mati.php'),
+                __DIR__ . '/../config/config.php' => config_path('mati.php'),
             ], 'config');
 
             // Publishing the views.
@@ -42,6 +43,8 @@ class MatiServiceProvider extends ServiceProvider
             // Registering package commands.
             // $this->commands([]);
         }
+
+        $this->app->bind(MatiClientInterface::class, MatiHttpClient::class);
     }
 
     /**
@@ -50,11 +53,11 @@ class MatiServiceProvider extends ServiceProvider
     public function register()
     {
         // Automatically apply the package configuration
-        $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'mati');
+        $this->mergeConfigFrom(__DIR__ . '/../config/config.php', 'mati');
 
         // Register the main class to use with the facade
         $this->app->singleton('mati', function () {
-            return new Mati;
+            return $this->app->make(Mati::class);
         });
     }
 }

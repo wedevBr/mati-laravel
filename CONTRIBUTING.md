@@ -42,6 +42,8 @@ If the project maintainer has any additional requirements, you will find them li
 
 - **[PSR-12 Coding Standard](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-12-coding-style-guide.md)** - The easiest way to apply the conventions is to install [PHP Code Sniffer](https://pear.php.net/package/PHP_CodeSniffer).
 
+- **Properties names must be snake_case** - In addition to PSR-12 Coding Style, it was stablished that class properties names must be written in snake_case.
+
 - **Add tests!** - Your patch won't be accepted if it doesn't have tests.
 
 - **Document any change in behaviour** - Make sure the `README.md` and any other relevant documentation are kept up-to-date.
