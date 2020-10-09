@@ -62,7 +62,7 @@ class MatiHttpClient implements MatiClientInterface
     }
 
     /**
-     * Create a new identity for a user that will be verified
+     * Create a new verification process
      *
      * @param array|null $metadata Key/Value pair of data to identify the user
      * @param string|null $flowId
@@ -70,8 +70,12 @@ class MatiHttpClient implements MatiClientInterface
      * @throws RequestException|LogicException
      * @return Response
      */
-    public function createIdentity($metadata = null, $flowId = null, $user_ip = null): Response
-    {
+    public function createVerification(
+        $metadata = null,
+        $flowId = null,
+        $user_ip = null,
+        $user_agent = null
+    ): Response {
         if (!$this->access_token) {
             throw new LogicException('No access token given to create identity');
         }
@@ -89,6 +93,10 @@ class MatiHttpClient implements MatiClientInterface
 
         if ($user_ip) {
             $request->withHeaders(['X-Forwarded-For' => $user_ip]);
+        }
+
+        if ($user_agent) {
+            $request->withHeaders(['User-Agent' => $user_agent]);
         }
 
         return $request->post($this->getApiUrl() . '/identities', $payload)

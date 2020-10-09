@@ -123,13 +123,17 @@ class Mati
     }
 
     /**
-     * Create an identity for an user that is going to be verified
+     * Create a new verification process
      *
      * @return object
      */
-    public function createIdentity($metadata = null, $flow_id = null, $user_ip = null)
-    {
-        return $this->client->createIdentity($metadata, $flow_id, $user_ip)->object();
+    public function createVerification(
+        $metadata = null,
+        $flow_id = null,
+        $user_ip = null,
+        $user_agent = null
+    ) {
+        return $this->client->createVerification($metadata, $flow_id, $user_ip, $user_agent)->object();
     }
 
     /**

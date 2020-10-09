@@ -2,7 +2,9 @@
 
 namespace WeDevBr\Mati\Tests;
 
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Http;
 use LogicException;
 use WeDevBr\Mati\MatiHttpClient;
 use Orchestra\Testbench\TestCase;
@@ -137,15 +139,20 @@ class MatiTest extends TestCase
      */
     public function testAuthorizeWithoutParamsSuccess()
     {
+        $responseMock = $this->getMockBuilder(Response::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $responseMock->expects($this->once())
+            ->method('object')
+            ->willReturn((object) ['access_token' => '123ABC==']);
+
         $clientMock = $this->getMockBuilder(MatiHttpClient::class)
             ->disableOriginalConstructor()
             ->getMock();
         $clientMock->expects($this->once())
             ->method('getAccessToken')
             ->with('123', 'shhh')
-            ->willReturn((object) ['object' => function () {
-                return (object) ['access_token' => '123ABC=='];
-            }]);
+            ->willReturn($responseMock);
 
         $mati = new Mati($clientMock);
         $mati->setClientId('123');
@@ -213,15 +220,20 @@ class MatiTest extends TestCase
      */
     public function testAuthorizeWithParams()
     {
+        $responseMock = $this->getMockBuilder(Response::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $responseMock->expects($this->once())
+            ->method('object')
+            ->willReturn((object) ['access_token' => '123ABC==']);
+
         $clientMock = $this->getMockBuilder(MatiHttpClient::class)
             ->disableOriginalConstructor()
             ->getMock();
         $clientMock->expects($this->once())
             ->method('getAccessToken')
             ->with('123', 'shhh')
-            ->willReturn((object) ['object' => function () {
-                return (object) ['access_token' => '123ABC=='];
-            }]);
+            ->willReturn($responseMock);
 
         $mati = new Mati($clientMock);
         $mati->authorize('123', 'shhh');
@@ -322,22 +334,27 @@ class MatiTest extends TestCase
      * @return void
      */
     public function testCreateIdentity() {
+        $responseMock = $this->getMockBuilder(Response::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $responseMock->expects($this->exactly(2))
+            ->method('object')
+            ->willReturn((object) []);
+
         $clientMock = $this->getMockBuilder(MatiHttpClient::class)
             ->disableOriginalConstructor()
             ->getMock();
         $clientMock->expects($this->exactly(2))
-            ->method('createIdentity')
+            ->method('createVerification')
             ->withConsecutive(
-                [null, null, null],
-                [['id' => 'ebc645e'], 'abcdef12345', '200.251.85.74']
+                [null, null, null, null],
+                [['id' => 'ebc645e'], 'abcdef12345', '200.251.85.74', 'Webkit']
             )
-            ->willReturn((object) ['object' => function () {
-                return (object) [];
-            }]);
+            ->willReturn($responseMock);
 
         $mati = new Mati($clientMock);
         $mati->setAccessToken('123321');
-        $mati->createIdentity();
-        $mati->createIdentity(['id' => 'ebc645e'], 'abcdef12345', '200.251.85.74');
+        $mati->createVerification();
+        $mati->createVerification(['id' => 'ebc645e'], 'abcdef12345', '200.251.85.74', 'Webkit');
     }
 }
