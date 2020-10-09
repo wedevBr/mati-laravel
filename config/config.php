@@ -10,5 +10,5 @@ return [
     'api_url' => env('MATI_API_URL', 'https://api.getmati.com/v2'),
 
     // Mati's OAuth URL
-    'auth_url' => env('MATI_AUTH_URL', 'https://api.getmati.com/oauth')
+    'auth_url' => env('MATI_AUTH_URL', 'https://api.getmati.com/oauth/token')
 ];

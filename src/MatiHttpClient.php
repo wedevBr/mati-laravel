@@ -54,7 +54,10 @@ class MatiHttpClient implements MatiClientInterface
     {
         return Http::withBasicAuth($client_id, $client_secret)
             ->asForm()
-            ->post($this->getAuthURL(), ['grant_type' => 'client_credentials'])
+            ->post(
+                $this->getAuthURL(),
+                ['grant_type' => 'client_credentials', 'scope' => 'verification_flow']
+            )
             ->throw();
     }
 
