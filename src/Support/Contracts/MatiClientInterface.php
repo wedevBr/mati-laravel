@@ -15,13 +15,13 @@ interface MatiClientInterface
      * @param string $access_token
      * @return self
      */
-    public function withToken(string $access_token): self;
+    public function withToken(string $access_token): MatiClientInterface;
 
     /**
      * Get an access token from the OAuth service
      *
      * @param string $client_id
-     * @param string $client_user
+     * @param string $client_secret
      * @return Response
      */
     public function getAccessToken(string $client_id, string $client_secret): Response;
@@ -32,6 +32,7 @@ interface MatiClientInterface
      * @param array|null $metadata Key/Value pair of data to identify the user
      * @param string|null $flowId
      * @param string|null $user_ip
+     * @param null $user_agent
      * @return Response
      */
     public function createVerification(

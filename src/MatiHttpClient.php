@@ -36,7 +36,7 @@ class MatiHttpClient implements MatiClientInterface
      * @param string $access_token
      * @return self
      */
-    public function withToken(string $access_token): self
+    public function withToken(string $access_token): MatiClientInterface
     {
         $this->access_token = $access_token;
         return $this;
@@ -46,9 +46,9 @@ class MatiHttpClient implements MatiClientInterface
      * Get an access token from the OAuth service
      *
      * @param string $client_id
-     * @param string $client_user
-     * @throws RequestException
+     * @param string $client_secret
      * @return Response
+     * @throws RequestException
      */
     public function getAccessToken(string $client_id, string $client_secret): Response
     {
@@ -67,8 +67,9 @@ class MatiHttpClient implements MatiClientInterface
      * @param array|null $metadata Key/Value pair of data to identify the user
      * @param string|null $flowId
      * @param string|null $user_ip
-     * @throws RequestException|LogicException
+     * @param null $user_agent
      * @return Response
+     * @throws RequestException
      */
     public function createVerification(
         $metadata = null,
