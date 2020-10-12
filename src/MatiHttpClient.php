@@ -69,7 +69,7 @@ class MatiHttpClient implements MatiClientInterface
      * @param string|null $user_ip
      * @param null $user_agent
      * @return Response
-     * @throws RequestException
+     * @throws RequestException|LogicException
      */
     public function createVerification(
         $metadata = null,
@@ -110,7 +110,7 @@ class MatiHttpClient implements MatiClientInterface
      * @param string $identity_id
      * @param IdentityInputInterface[]|Collection $inputs
      *
-     * @throws LogicException|RequestException
+     * @throws LogicException|RequestException|LogicException|TypeError
      * @return Response
      */
     public function sendInput(string $identity_id, $inputs): Response
