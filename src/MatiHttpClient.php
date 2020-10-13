@@ -67,7 +67,7 @@ class MatiHttpClient implements MatiClientInterface
      * @param array|null $metadata Key/Value pair of data to identify the user
      * @param string|null $flowId
      * @param string|null $user_ip
-     * @param null $user_agent
+     * @param string|null $user_agent
      * @return Response
      * @throws RequestException|LogicException
      */
