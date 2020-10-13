@@ -110,7 +110,7 @@ class MatiHttpClient implements MatiClientInterface
      * @param string $identity_id
      * @param IdentityInputInterface[]|Collection $inputs
      *
-     * @throws LogicException|RequestException|LogicException|TypeError
+     * @throws LogicException|RequestException|TypeError
      * @return Response
      */
     public function sendInput(string $identity_id, $inputs): Response
