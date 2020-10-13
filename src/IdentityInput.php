@@ -28,37 +28,37 @@ class IdentityInput implements IdentityInputInterface
         $this->input_type = $input_type;
     }
 
-    public function setGroup(int $group): self
+    public function setGroup(int $group): IdentityInputInterface
     {
         $this->group = $group;
         return $this;
     }
 
-    public function setType(string $type): self
+    public function setType(string $type): IdentityInputInterface
     {
         $this->type = $type;
         return $this;
     }
 
-    public function setCountry(string $country): self
+    public function setCountry(string $country): IdentityInputInterface
     {
         $this->country = $country;
         return $this;
     }
 
-    public function setRegion(string $region): self
+    public function setRegion(string $region): IdentityInputInterface
     {
         $this->region = $region;
         return $this;
     }
 
-    public function setPage(string $page): self
+    public function setPage(string $page): IdentityInputInterface
     {
         $this->page = $page;
         return $this;
     }
 
-    public function setFilePath(string $path): self
+    public function setFilePath(string $path): IdentityInputInterface
     {
         $this->file_path = $path;
         return $this;
