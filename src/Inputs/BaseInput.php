@@ -13,7 +13,7 @@ abstract class BaseInput implements IdentityInputInterface
 {
     protected $file_path;
 
-    public function setFilePath(string $path): IdentityInputInterface
+    public function setFilePath(string $path)
     {
         $this->file_path = $path;
         return $this;

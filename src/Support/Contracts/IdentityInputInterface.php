@@ -6,7 +6,7 @@ use Illuminate\Contracts\Support\Arrayable;
 
 interface IdentityInputInterface extends Arrayable
 {
-    public function setFilePath(string $path): IdentityInputInterface;
+    public function setFilePath(string $path);
     public function getFileName(): string;
     public function getFileContents();
 }
