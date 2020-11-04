@@ -41,7 +41,7 @@ A complete process looks like this:
 ```php
 $verification = MatiFacade::createVerification(['id' => 'localUserId'], 'flowId', '10.20.30.40', 'User-Agent String');
 
-$document1 = new \WeDevBr\Mati\IdentityInput('document-photo');
+$document1 = new \WeDevBr\Mati\Inputs\DocumentPhoto;
 $document1->setGroup(0)
     ->setType('national-id')
     ->setCountry('US')
