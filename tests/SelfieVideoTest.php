@@ -3,15 +3,15 @@
 namespace WeDevBr\Mati\Tests;
 
 use Orchestra\Testbench\TestCase;
-use WeDevBr\Mati\IdentityInput;
+use WeDevBr\Mati\Inputs\SelfieVideo;
 use WeDevBr\Mati\MatiServiceProvider;
 
 /**
- * Tests for IdentityInput class
+ * Tests for SelfieVideo class
  *
  * @author Gabriel Mineiro <gabrielpfgmineiro@gmail.com>
  */
-class IdentityInputTest extends TestCase
+class SelfieVideoTest extends TestCase
 {
     protected function getPackageProviders($app)
     {
@@ -28,23 +28,14 @@ class IdentityInputTest extends TestCase
      */
     public function testToArray()
     {
-        $input = new IdentityInput('document-photo');
-        $input->setGroup(0)
-            ->setType('national-id')
-            ->setCountry('BR')
-            ->setPage('front')
-            ->setFilePath('/tmp/0001.jpg');
+        $input = new SelfieVideo();
+        $input->setFilePath('/tmp/0001.mp4');
 
         $this->assertEquals(
             [
-                'inputType' => 'document-photo',
-                'group' => 0,
+                'inputType' => 'selfie-video',
                 'data' => [
-                    'type' => 'national-id',
-                    'country' => 'BR',
-                    'region' => '',
-                    'page' => 'front',
-                    'filename' => '0001.jpg'
+                    'filename' => '0001.mp4'
                 ]
             ],
             $input->toArray()

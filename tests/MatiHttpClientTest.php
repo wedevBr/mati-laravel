@@ -5,7 +5,7 @@ namespace WeDevBr\Mati\Tests;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Orchestra\Testbench\TestCase;
-use WeDevBr\Mati\IdentityInput;
+use WeDevBr\Mati\Inputs\DocumentPhoto;
 use WeDevBr\Mati\MatiHttpClient;
 use WeDevBr\Mati\MatiServiceProvider;
 
@@ -35,9 +35,8 @@ class MatiHttpClientTest extends TestCase
         $client = new MatiHttpClient('123ABC==');
 
         // Mock input1
-        $input1 = $this->getMockBuilder(IdentityInput::class)
+        $input1 = $this->getMockBuilder(DocumentPhoto::class)
             ->onlyMethods(['getFileContents'])
-            ->setConstructorArgs(['document-photo'])
             ->getMock();
 
         // Mock getFileContents behaviour
@@ -53,9 +52,8 @@ class MatiHttpClientTest extends TestCase
             ->setFilePath('/tmp/0001.jpg');
 
         // Do the same for input2
-        $input2 = $this->getMockBuilder(IdentityInput::class)
+        $input2 = $this->getMockBuilder(DocumentPhoto::class)
             ->onlyMethods(['getFileContents'])
-            ->setConstructorArgs(['document-photo'])
             ->getMock();
         $input2->expects($this->once())
             ->method('getFileContents')
