@@ -100,7 +100,7 @@ class MatiHttpClient implements MatiClientInterface
             $request->withHeaders(['User-Agent' => $user_agent]);
         }
 
-        return $request->post($this->getApiUrl() . '/identities', $payload)
+        return $request->post($this->getApiUrl() . '/verifications', $payload)
             ->throw();
     }
 
