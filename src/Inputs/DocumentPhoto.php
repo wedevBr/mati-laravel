@@ -1,64 +1,46 @@
 <?php
 
-namespace WeDevBr\Mati;
-
-use WeDevBr\Mati\Support\Contracts\IdentityInputInterface;
+namespace WeDevBr\Mati\Inputs;
 
 /**
  * Wrapper for identity input
  *
  * @author Gabriel Mineiro <gabrielpfgmineiro@gmail.com>
  */
-class IdentityInput implements IdentityInputInterface
+class DocumentPhoto extends BaseInput
 {
-    protected $input_type;
+    use HasType;
+
     protected $group;
-    protected $type;
     protected $country;
     protected $region;
     protected $page;
-    protected $file_path;
 
-    /**
-     * @param string $input_type
-     * @return void
-     */
-    public function __construct(string $input_type)
-    {
-        $this->input_type = $input_type;
-    }
-
-    public function setGroup(int $group): self
+    public function setGroup(int $group): DocumentPhoto
     {
         $this->group = $group;
         return $this;
     }
 
-    public function setType(string $type): self
-    {
-        $this->type = $type;
-        return $this;
-    }
-
-    public function setCountry(string $country): self
+    public function setCountry(string $country): DocumentPhoto
     {
         $this->country = $country;
         return $this;
     }
 
-    public function setRegion(string $region): self
+    public function setRegion(string $region): DocumentPhoto
     {
         $this->region = $region;
         return $this;
     }
 
-    public function setPage(string $page): self
+    public function setPage(string $page): DocumentPhoto
     {
         $this->page = $page;
         return $this;
     }
 
-    public function setFilePath(string $path): self
+    public function setFilePath(string $path): DocumentPhoto
     {
         $this->file_path = $path;
         return $this;
@@ -77,7 +59,7 @@ class IdentityInput implements IdentityInputInterface
     public function toArray()
     {
         return [
-            'inputType' => $this->input_type,
+            'inputType' => 'document-photo',
             'group' => $this->group,
             'data' => [
                 'type' => $this->type,
